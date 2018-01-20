@@ -58,8 +58,8 @@ void Grid::makeFull(char cell) {
 std::vector<int> Grid::getEmptyPositions() const {
 	std::vector<int> empty_positions;
 
-	for (int i = 0; i < Gridsize*Gridsize; i++) {
-		if (subgrid[i / 3][i % 3 + 1] == '.') {
+	for (int i = 1; i <= 9; i++) {
+		if (subgrid[i / 3][i % 3 - 1] == '.') {
 			empty_positions.push_back(i);
 		}
 	}

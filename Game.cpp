@@ -4,6 +4,7 @@
 #include "AIPlayer.hpp"
 
 #include <iostream>
+#include <cassert>
 #include <cstdlib>
 #include <fstream>
 #include <string>
@@ -160,6 +161,27 @@ int Game::getFinalInput(int& g) {
 	}
 	return 100;
 }
+
+std::vector<int> Game::getEmptyGrids() const {
+	std::vector<int> emptyGrids;
+
+	for (int i = 0; i < 9; i++) {
+		//if (grid[i/3][i%3+1].checkFull()) {
+
+		//}
+	}
+	return emptyGrids;
+}
+
+bool Game::gridFull(int i) {
+	if (grid[X(i)][Y(i)].checkFull()) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 void Game::input(int& g) {
 
 	int input;
@@ -188,6 +210,8 @@ void Game::input(int& g) {
 
 	g = input;
 }
+
+
 
 bool Game::checkWin() {
 	char cell = player;
@@ -286,13 +310,3 @@ int main()
 	return 0;
 }
 
-/*std::vector<int> Grid::getEmptyGrids() const {
-	std::vector<int> emptyGrids;
-
-	for (int i = 0; i < 9; i++) {
-		if (grid[X(i)][Y(i)]. {
-			empty_positions.push_back(i);
-		}
-	}
-	return empty_positions;
-}*/

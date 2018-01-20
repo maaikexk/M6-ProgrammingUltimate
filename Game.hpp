@@ -3,6 +3,8 @@
 #include "Grid.hpp"
 #include "HumanPlayer.hpp"
 #include "AIPlayer.hpp"
+#include <vector>
+class AIPlayer;
 
 class Game
 {
@@ -23,5 +25,6 @@ public:
 	AIPlayer playerAI;
 	HumanPlayer playerHuman;
 	std::vector<int> getEmptyGrids() const;
+	bool gridFull(int);
 	//void showScore();
 };

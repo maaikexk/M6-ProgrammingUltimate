@@ -9,11 +9,22 @@ using namespace std;
 
 int AIPlayer::getInput(Grid board) {
 	std::vector<int> possibleMoves = board.getEmptyPositions();
+	//std::vector<int> possibleGrids = ;
+	int input = 100;
 
-	/*if (possibleMoves.size = 0) {
-		std::vector<int> possibleGrids = getEmptyGrids();
-	}*/
-
-	int input= rand() % possibleMoves.size() + 0;
-	return input;
+	if (possibleMoves.size() <= 0) {
+		std::vector<int> possibleGrids;
+		Game currentGame;
+		for (int i = 0; i < 9; i++) {
+			if (currentGame.grid[i / 3][i % 3 - 1].checkFull()) {
+				possibleGrids.push_back(i);
+			}
+		}
+		input = rand() % possibleGrids.size() + 0;
+		return possibleGrids[input];
+	}
+	else {
+		input = rand() % possibleMoves.size() + 0;
+		return possibleMoves[input];
+	}
 }

@@ -1,5 +1,4 @@
-#ifndef Grid_hpp
-#define Grid_hpp
+#pragma once
 
 #include <vector>
 
@@ -23,4 +22,3 @@ public:
 //+	int possibleMoves[];
 };
 
-#endif /* Grid_hpp */

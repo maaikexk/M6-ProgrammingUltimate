@@ -1,8 +1,9 @@
-#ifndef AIPlayer_hpp
-#define AIPlayer_hpp
+#pragma once
 
 #include "Grid.hpp"
 
+
+//class Game;
 
 class AIPlayer {
 public:
@@ -10,4 +11,3 @@ public:
 	
 };
 
-#endif /* AIPlayer_hpp */
