@@ -10,13 +10,14 @@ using namespace std;
 int AIPlayer::getInput(Grid board) {
 	std::vector<int> possibleMoves = board.getEmptyPositions();
 	//std::vector<int> possibleGrids = ;
-	int input = 100;
+	int input;
 
 	if (possibleMoves.size() <= 0) {
 		std::vector<int> possibleGrids;
 		Game currentGame;
-		for (int i = 0; i < 9; i++) {
-			if (currentGame.grid[i / 3][i % 3 - 1].checkFull()) {
+		
+		for (int i = 1; i <= 9; i++) {
+			if (!currentGame.grid[i / 3][i % 3 - 1].checkFull()) {
 				possibleGrids.push_back(i);
 			}
 		}

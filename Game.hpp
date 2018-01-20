@@ -17,7 +17,7 @@ public:
 	void display();
 	void play();
 	void input(int& g);
-	int pickNewGrid();
+	int pickNewGrid(int& g);
 	int getFinalInput(int& g);
 	bool checkWin();
 	char player;

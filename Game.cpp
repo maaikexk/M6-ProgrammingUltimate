@@ -41,12 +41,6 @@ void Game::play() {
 	while (1) {
 		display();
 		cout << "\n  Player " << player << " - Enter Grid: ";
-		/*if (player = 'x') {
-			g = player1.getInput();
-		}
-		if (player = 'o') {
-			g = player2.getInput();
-		}*/
 		cin >> g;
 		if (g > 0 && g < 10) {
 			break;
@@ -110,7 +104,7 @@ void Game::display()
 	cout << "\n";
 }
 
-int Game::pickNewGrid() {
+int Game::pickNewGrid(int& g) {
 	int input;
 	if (player == 'x') {
 		cout << "\n Player" << player << "- Enter grid";
@@ -124,6 +118,11 @@ int Game::pickNewGrid() {
 			cin.ignore(); cin.get();
 			return input;
 		}
+	}
+
+	if (player == 'o') {
+		input = playerAI.getInput(grid[X(g)][Y(g)]);
+		return input;
 	}
 
 	return false;
@@ -148,7 +147,6 @@ int Game::getFinalInput(int& g) {
 		cin.ignore(); cin.get();
 	}
 
-
 	if (player == 'o') {
 		input = playerAI.getInput(grid[X(g)][Y(g)]);
 		if (input > 0 && input < 10)
@@ -159,27 +157,7 @@ int Game::getFinalInput(int& g) {
 		}
 		display();
 	}
-	return 100;
-}
-
-std::vector<int> Game::getEmptyGrids() const {
-	std::vector<int> emptyGrids;
-
-	for (int i = 0; i < 9; i++) {
-		//if (grid[i/3][i%3+1].checkFull()) {
-
-		//}
-	}
-	return emptyGrids;
-}
-
-bool Game::gridFull(int i) {
-	if (grid[X(i)][Y(i)].checkFull()) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return false;
 }
 
 void Game::input(int& g) {
@@ -187,13 +165,15 @@ void Game::input(int& g) {
 	int input;
 	while (1) {
 		display();
-		cout << "\n" << player;
+		//cout << "\n" << player;
 
 		if (grid[X(g)][Y(g)].checkFull()) {
-			g=pickNewGrid();
+			g=pickNewGrid(g);
 		}
-
+		//cin.ignore();
 		input = getFinalInput(g);
+
+		cout << input;
 
 		if (input < 10) {
 			break;
@@ -210,8 +190,6 @@ void Game::input(int& g) {
 
 	g = input;
 }
-
-
 
 bool Game::checkWin() {
 	char cell = player;
@@ -236,77 +214,5 @@ bool Game::checkWin() {
 	}
 
 	return false;
-	/*char p = player;
-	int row = 1, col = 1, main_diag = 1, anti_diag = 1;
-	for (size_t i = 0; i < 3; ++i)
-	{
-		row = col = 1;
-		if (grid.get(i, 3 - 1 - i) != p) {
-			anti_diag = 0;
-		}
-		if (grid.get(i, i) != p) {
-			row = col = main_diag = 0;
-		}
-
-		else {
-			for (size_t j = 0; j < 3; ++j)
-			{
-				if (grid.get(i, j) != p) {
-					row = 0;
-				}
-				if (grid.get(j, i) != p) {
-					col = 0;
-				}
-			}
-		}
-
-		if (row || col) {
-			return 1;
-		}
-	}
-
-	if (main_diag || anti_diag) {
-		return 1;
-	}
-	return 0;*/
-}
-
-int main()
-{
-	Game game;
-	game.display();
-	cout << "\n  Welcome to Ultimate Tic Tac Toe." <<
-		"\n  Press Enter to start.";
-	cin.get();
-
-	int input, error = 0;
-	enum menu { play = 1, scores, quit };
-	do {
-		game.display();
-		if (error) {
-			cout << "  Invalid option. Try again.\n";
-			error = 0;
-		}
-		else {
-			cout << "  Select an option: \n";
-		}
-		cout << "    1) Play\n    2) Scores\n    3) Quit\n" << "\n> ";
-		cin >> input;
-		switch (input) {
-		case play:
-			game.play(); break;
-		case scores:
-			//showScores();
-			break;
-		case quit:
-			std::exit(0);
-		default:
-			error = 1;
-		}
-		system("cls");
-	} while (error);
-
-	system("pause");
-	return 0;
 }
 
