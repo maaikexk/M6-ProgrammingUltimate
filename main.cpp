@@ -2,13 +2,14 @@
 #include <cstdlib>
 #include <fstream>
 #include <string>
-#include "Game.hpp";
+//#include "Game.hpp"
+#include "GameManager.hpp"
 
 using namespace std;
 
 int main(){
-	Game game;
-	game.display();
+	GameManager currentGame;
+	currentGame.display();
 	cout << "\n  Welcome to Ultimate Tic Tac Toe." <<
 		"\n  Press Enter to start.";
 	cin.get();
@@ -16,7 +17,7 @@ int main(){
 	int input, error = 0;
 	enum menu { play = 1, scores, quit };
 	do {
-		game.display();
+		currentGame.display();
 		if (error) {
 			cout << "  Invalid option. Try again.\n";
 			error = 0;
@@ -28,7 +29,7 @@ int main(){
 		cin >> input;
 		switch (input) {
 		case play:
-			game.play(); 
+			currentGame.play(); 
 			break;
 		case scores:
 			//showScores();
