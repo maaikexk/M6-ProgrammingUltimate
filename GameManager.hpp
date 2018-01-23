@@ -2,7 +2,7 @@
 
 #include "HumanPlayer.hpp"
 #include "AIPlayer.hpp"
-#include "Game.hpp"
+#include "Board.hpp"
 
 class GameManager {
 
@@ -20,5 +20,5 @@ public:
 	size_t cur;
 	AIPlayer playerAI;
 	HumanPlayer playerHuman;
-	Game currentBoard;
+	Board currentBoard;
 };

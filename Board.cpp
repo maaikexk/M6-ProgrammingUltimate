@@ -1,18 +1,45 @@
+#include "Board.hpp"
 #include "Grid.hpp"
+#include "HumanPlayer.hpp"
+#include "AIPlayer.hpp"
+
+#include <iostream>
 #include <cassert>
+#include <cstdlib>
+#include <fstream>
+#include <string>
 
-void Grid::set(int x, int y, char cell) {
-	subgrid[x][y] = cell;
-}
+using namespace std;
 
-char Grid::get(int x, int y) {
-	return subgrid[x][y];
-}
+bool Board::checkWin(char player) {
+	char cell = player;
+	for (int y = 0; y < Gridsize; y++) {
+		if (grid[0][y].winningCel(cell) && grid[1][y].winningCel(cell) && grid[2][y].winningCel(cell)) {
+			return true;
+		}
+	}
 
-bool Grid::checkFull() {
 	for (int x = 0; x < Gridsize; x++) {
-		for (int y = 0; y < Gridsize; y++) {
-			if (subgrid[x][y] == '.') {
+		if (grid[x][0].winningCel(cell) && grid[x][1].winningCel(cell) && grid[x][2].winningCel(cell)) {
+			return true;
+		}
+	}
+
+	// check diagonal
+	if (grid[0][0].winningCel(cell) && grid[1][1].winningCel(cell) && grid[2][2].winningCel(cell)) {
+		return true;
+	}
+	if (grid[0][2].winningCel(cell) && grid[1][1].winningCel(cell) && grid[2][0].winningCel(cell)) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Board::isFull() {
+	for (int i = 0; i < Gridsize; i++) {
+		for (int j = 0; j < Gridsize; j++) {
+			if (!grid[i][j].checkFull()) {
 				return false;
 			}
 		}
@@ -20,54 +47,7 @@ bool Grid::checkFull() {
 	return true;
 }
 
-bool Grid::winningCel(char cell) {
-	for (int y = 0; y < Gridsize; y++) {
-		if (subgrid[0][y] == cell && subgrid[1][y] == cell && subgrid[2][y] == cell) {
-			makeFull(cell);
-			return true;
-		}
-	}
-
-	for (int x = 0; x < Gridsize; x++) {
-		if (subgrid[x][0] == cell && subgrid[x][1] == cell && subgrid[x][2] == cell) {
-			makeFull(cell);
-			return true;
-		}
-	}
-
-	// check diagonal
-	if (subgrid[0][0] == cell && subgrid[1][1] == cell && subgrid[2][2] == cell) {
-		makeFull(cell);
-		return true;
-	}
-	if (subgrid[0][2] == cell && subgrid[1][1] == cell && subgrid[2][0] == cell) {
-		makeFull(cell);
-		return true;
-	}
-	return false;
-}
-
-void Grid::makeFull(char cell) {
-	for (int i = 0; i < Gridsize; i++) {
-		for (int j = 0; j < Gridsize; j++) {
-			subgrid[i][j] = cell;
-		}
-	}
-}
-
-int Grid::heuristicScoreGrid(char currentPlayer, char otherPlayer) {
-
-	if (winningCel(currentPlayer)) {
-		return 200;
-	}
-
-	if (winningCel(otherPlayer)) {
-		return -200;
-	}
-
-	if (checkFull()) {
-		return 0;
-	}
+int Board::heuristicScoreBoard(char currentPlayer, char otherPlayer) {
 	int score = 0;
 	int current = 0;
 	int other = 0;
@@ -83,12 +63,12 @@ int Grid::heuristicScoreGrid(char currentPlayer, char otherPlayer) {
 		for (int k = 0; k < Gridsize; k++) {
 
 			//current player
-			if (subgrid[j][k] == currentPlayer) {
+			if (grid[j][k].winningCel(currentPlayer)) {
 				current++;
 			}
 
 			//other player
-			if (subgrid[j][k] == otherPlayer) {
+			if (grid[j][k].winningCel(otherPlayer)) {
 				other++;
 			}
 		}
@@ -102,12 +82,12 @@ int Grid::heuristicScoreGrid(char currentPlayer, char otherPlayer) {
 
 		for (int j = 0; j < Gridsize; j++) {
 			//curent player
-			if (subgrid[j][k] == currentPlayer) {
+			if (grid[j][k].winningCel(currentPlayer)) {
 				current++;
 			}
 
 			//other palyer
-			if (subgrid[j][k] == otherPlayer) {
+			if (grid[j][k].winningCel(otherPlayer)) {
 				other++;
 			}
 		}
@@ -122,12 +102,12 @@ int Grid::heuristicScoreGrid(char currentPlayer, char otherPlayer) {
 	//check diagonal from left top till bottom right
 	for (int j = 0; j < Gridsize; j++) {
 		//current field
-		if (subgrid[j][j] == currentPlayer) {
+		if (grid[j][j].winningCel(currentPlayer)) {
 			current++;
 		}
 
 		//other field
-		if (subgrid[j][j] == otherPlayer) {
+		if (grid[j][j].winningCel(otherPlayer)) {
 			other++;
 		}
 	}
@@ -141,12 +121,12 @@ int Grid::heuristicScoreGrid(char currentPlayer, char otherPlayer) {
 	for (int j = 0; j < Gridsize; j++) {
 
 		//current player
-		if (subgrid[j][2 - j] == currentPlayer) {
+		if (grid[j][2 - j].winningCel(currentPlayer)) {
 			current++;
 		}
 
 		//other player
-		if (subgrid[j][2 - j] == otherPlayer) {
+		if (grid[j][2 - j].winningCel(otherPlayer)) {
 			other++;
 		}
 	}
@@ -159,7 +139,7 @@ int Grid::heuristicScoreGrid(char currentPlayer, char otherPlayer) {
 
 }
 
-int Grid::check(int current, int other) {
+int Board::check(int current, int other) {
 	if (current == 2) {
 		twoCurrent++;
 	}
@@ -177,13 +157,3 @@ int Grid::check(int current, int other) {
 	return (oneCurrent, twoCurrent, oneOther, twoOther);
 }
 
-std::vector<int> Grid::getEmptyPositions() const {
-	std::vector<int> empty_positions;
-
-	for (int i = 1; i <= 9; i++) {
-		if (subgrid[i / 3][i % 3 - 1] == '.') {
-			empty_positions.push_back(i);
-		}
-	}
-	return empty_positions;
-}

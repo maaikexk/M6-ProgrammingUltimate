@@ -4,10 +4,8 @@
 #include "HumanPlayer.hpp"
 #include "AIPlayer.hpp"
 #include <vector>
-class AIPlayer;
 
-class Game
-{
+class Board{
 private:
 	int Gridsize = 3;
 
@@ -20,6 +18,10 @@ public:
 	//int pickNewGrid(int& g);
 	//int getFinalInput(int& g);
 	bool checkWin(char);
+	bool isFull();
+	int heuristicScoreBoard(char, char);
+	int check(int, int);
+	int oneCurrent, twoCurrent, oneOther, twoOther;
 	//char player;
 	//size_t cur;
 	//AIPlayer playerAI;

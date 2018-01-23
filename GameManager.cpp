@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "Board.hpp"
 #include "GameManager.hpp"
 #include "HumanPlayer.hpp"
 #include "AIPlayer.hpp"
@@ -124,7 +124,7 @@ int GameManager::pickNewGrid(int& g) {
 	}
 
 	if (player == 'o') {
-		input = playerAI.getInput(currentBoard.grid[X(g)][Y(g)]);
+		input = playerAI.getInput(g, currentBoard);
 		return input;
 	}
 
@@ -151,7 +151,7 @@ int GameManager::getFinalInput(int& g) {
 	}
 
 	if (player == 'o') {
-		input = playerAI.getInput(currentBoard.grid[X(g)][Y(g)]);
+		input = playerAI.getInput(g, currentBoard);
 		if (input > 0 && input < 10)
 		{
 			if (currentBoard.grid[X(g)][Y(g)].get(X(input), Y(input)) == '.') {
@@ -182,7 +182,6 @@ void GameManager::input(int& g) {
 
 		if (input < 10) {
 			break;
-
 		}
 	}
 

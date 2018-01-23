@@ -17,8 +17,11 @@ public:
 	bool checkFull();
 	bool won;
 	bool winningCel(char);
+	int heuristicScoreGrid(char, char);
+	int check(int, int);
 	void makeFull(char);
 	std::vector<int> getEmptyPositions() const;
+	int twoCurrent, oneCurrent, twoOther, oneOther;
 //+	int possibleMoves[];
 };
 
