@@ -9,23 +9,29 @@
 #include <fstream>
 #include <string>
 
-using namespace std;
+//Board is the big grid and has an array of subgrid with which it uses
 
+//fuction to check if there is a winner
 bool Board::checkWin(char player) {
+
+	//the current player
 	char cell = player;
+
+	//check the vertical grids
 	for (int y = 0; y < Gridsize; y++) {
 		if (grid[0][y].winningCel(cell) && grid[1][y].winningCel(cell) && grid[2][y].winningCel(cell)) {
 			return true;
 		}
 	}
 
+	//check the horizontal grids
 	for (int x = 0; x < Gridsize; x++) {
 		if (grid[x][0].winningCel(cell) && grid[x][1].winningCel(cell) && grid[x][2].winningCel(cell)) {
 			return true;
 		}
 	}
 
-	// check diagonal
+	// check diagonals
 	if (grid[0][0].winningCel(cell) && grid[1][1].winningCel(cell) && grid[2][2].winningCel(cell)) {
 		return true;
 	}
@@ -33,10 +39,14 @@ bool Board::checkWin(char player) {
 		return true;
 	}
 
+	// if none is true, return false
 	return false;
 }
 
+//check if the board is full
 bool Board::isFull() {
+
+	//check each grid, if one is not full retun false
 	for (int i = 0; i < Gridsize; i++) {
 		for (int j = 0; j < Gridsize; j++) {
 			if (!grid[i][j].checkFull()) {
@@ -44,10 +54,15 @@ bool Board::isFull() {
 			}
 		}
 	}
+
+	//else return true
 	return true;
 }
 
+//this fuction calculates the heuristicScore for the board (big grid)
 int Board::heuristicScoreBoard(char currentPlayer, char otherPlayer) {
+
+	//initializing the variables
 	int score = 0;
 	int current = 0;
 	int other = 0;
@@ -57,6 +72,7 @@ int Board::heuristicScoreBoard(char currentPlayer, char otherPlayer) {
 	twoCurrent = 0;
 	twoOther = 0;
 
+	//check horizontal
 	for (int j = 0; j < Gridsize; j++) {
 		current = 0;
 		other = 0;
@@ -72,10 +88,13 @@ int Board::heuristicScoreBoard(char currentPlayer, char otherPlayer) {
 				other++;
 			}
 		}
-		//call the function to bump the total score
-		check(current, other);
+		//call the function to bump the total score if only one player has moves in that row
+		if (current == 0 || other == 0) {
+			check(current, other);
+		}
 	}
 
+	//check vertical
 	for (int k = 0; k < Gridsize; k++) {
 		current = 0;
 		other = 0;
@@ -93,7 +112,9 @@ int Board::heuristicScoreBoard(char currentPlayer, char otherPlayer) {
 		}
 
 		//call the function to bump the total score
-		check(current, other);
+		if (current == 0 || other == 0) {
+			check(current, other);
+		}
 	}
 
 	current = 0;
@@ -112,7 +133,9 @@ int Board::heuristicScoreBoard(char currentPlayer, char otherPlayer) {
 		}
 	}
 	//call the function to bump the total score
-	check(current, other);
+	if (current == 0 || other == 0) {
+		check(current, other);
+	}
 
 	current = 0;
 	other = 0;
@@ -131,7 +154,9 @@ int Board::heuristicScoreBoard(char currentPlayer, char otherPlayer) {
 		}
 	}
 	//call the function to bump the total score
-	check(current, other);
+	if (current == 0 || other == 0) {
+		check(current, other);
+	}
 
 	//calculate the final score and return it
 	score = (3 * twoCurrent + oneCurrent) - (3 * twoOther + oneOther);
@@ -139,7 +164,9 @@ int Board::heuristicScoreBoard(char currentPlayer, char otherPlayer) {
 
 }
 
+//function which checks and returns the variable used in the heuristics value
 int Board::check(int current, int other) {
+
 	if (current == 2) {
 		twoCurrent++;
 	}

@@ -5,9 +5,9 @@
 
 #include "Grid.hpp"
 
-
-//class Game;
+//important to include the class otherwise we cannot use it
 class Board;
+
 class AIPlayer {
 private:
 	int gridSize = 3;

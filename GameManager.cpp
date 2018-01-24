@@ -9,29 +9,40 @@
 #include <fstream>
 #include <string>
 
+//calling the namespace so we don't have to call it each time
 using namespace std;
 
 string rule(80, '_');
 
-
+//returns the x value
 int X(int pos) {
 	return pos / 3;
 }
 
+//returns the y value
 int Y(int pos) {
 	return pos % 3 - 1;
 }
 
-
+//the constructor
 GameManager::GameManager() {
+
+	//for each big grid[i][j]
 	for (size_t i = 0; i < 3; ++i)
 		for (size_t j = 0; j < 3; ++j)
+
+			//and each supgrid[k][l]
 			for (size_t k = 0; k < 3; ++k)
-				for (size_t l = 0; l < 3; ++l)
-				{
+				for (size_t l = 0; l < 3; ++l){
+
+					//set the subgrid to empty
 					currentBoard.grid[i][j].set(k, l, '.');
 				}
+
+	//the start player
 	player = 'x';
+
+	//the players playing
 	playerAI = AIPlayer();
 	playerHuman = HumanPlayer();
 	cur = 0;

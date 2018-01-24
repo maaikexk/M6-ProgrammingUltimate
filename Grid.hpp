@@ -22,6 +22,5 @@ public:
 	void makeFull(char);
 	std::vector<int> getEmptyPositions() const;
 	int twoCurrent, oneCurrent, twoOther, oneOther;
-//+	int possibleMoves[];
 };
 
