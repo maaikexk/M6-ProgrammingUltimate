@@ -49,47 +49,27 @@ GameManager::GameManager() {
 }
 
 void GameManager::play() {
-	int g, s;
-	display();
-	while (1) {
-		display();
-		cout << "\n  Player " << player << " - Enter Grid: ";
-		cin >> g;
-		if (g > 0 && g < 10) {
-			break;
-		}
-		display();
-		cout << "\n  Try again.";
-		cin.get();
-	}
+	int grid, s;
+	//display();
 
-	s = g;
+	grid = 1;
+
 	while (1) {
-		display();
+		//display();
 		if (currentBoard.checkWin(player)) {
-
-			display();
-			cout << "\n  Player " << player << " won!";
-			cin.get();
-			cin.ignore();
+			//display();
 			break;
 		}
 
 		player = player == 'x' ? 'o' : 'x';
-		cur = g;
-		input(g);
+		cur = grid;
+		input(grid);
 	}
 }
 
-void GameManager::display()
-{
-	system("cls");
-	cout << "\n  ULTIMATE TIC TAC TOE\n" << rule;
-
-	for (size_t i = 0; i < 3; ++i)
-	{
-		for (size_t k = 0; k < 3; ++k)
-		{
+/*void GameManager::display(){
+	for (size_t i = 0; i < 3; ++i){
+		for (size_t k = 0; k < 3; ++k){
 			cout << "\n";
 			char left, right;
 			left = right = ' ';
@@ -116,92 +96,83 @@ void GameManager::display()
 		cout << "\n\n";
 	}
 	cout << "\n";
-}
+}*/
 
-int GameManager::pickNewGrid(int& g) {
+int GameManager::pickNewGrid(int& grid) {
 	int input;
 	if (player == 'x') {
-		cout << "\n Player" << player << "- Enter grid";
 		input = playerHuman.getNewGrid();
 		if (currentBoard.grid[X(input)][Y(input)].checkFull()) {
 			return 0;
 		}
 
 		else {
-			display();
-			cin.ignore(); cin.get();
+			//display();
 			return input;
 		}
 	}
 
 	if (player == 'o') {
-		input = playerAI.getInput(g, currentBoard);
+		input = playerAI.getInput(grid, currentBoard);
 		return input;
 	}
 
 	return false;
-
-	//if (player == 'o'
 }
 
-int GameManager::getFinalInput(int& g) {
+int GameManager::getFinalInput(int& grid) {
 	int input;
 	if (player == 'x') {
-		cout << "\n  Player " << player << " - Enter subgrid: ";
 		input = playerHuman.getInput();
-		//cin >> s;
+		
 		if (input > 0 && input < 10)
 		{
-			if (currentBoard.grid[X(g)][Y(g)].get(X(input), Y(input)) == '.') {
+			if (currentBoard.grid[X(grid)][Y(grid)].get(X(input), Y(input)) == '.') {
 				return input;
 			}
 		}
-		display();
-		cout << "\n  Try again.";
-		cin.ignore(); cin.get();
-	}
+		//display();
+		}
 
 	if (player == 'o') {
-		input = playerAI.getInput(g, currentBoard);
+		input = playerAI.getInput(grid, currentBoard);
 		if (input > 0 && input < 10)
 		{
-			if (currentBoard.grid[X(g)][Y(g)].get(X(input), Y(input)) == '.') {
+			if (currentBoard.grid[X(grid)][Y(grid)].get(X(input), Y(input)) == '.') {
 				return input;
 			}
 		}
-		display();
+		//display();
 	}
 	return false;
 }
 
-void GameManager::input(int& g) {
+void GameManager::input(int& grid) {
 
 	int input;
 	while (1) {
-		display();
-		//cout << "\n" << player;
+		//display();
 
-		if (currentBoard.grid[X(g)][Y(g)].checkFull()) {
-			g = pickNewGrid(g);
+		if (currentBoard.grid[X(grid)][Y(grid)].checkFull()) {
+			grid = pickNewGrid(grid);
 		}
-		//cin.ignore();
-		input = getFinalInput(g);
-		if (currentBoard.grid[X(g)][Y(g)].get(X(input),Y(input)) != '.') {
+
+		input = getFinalInput(grid);
+		if (currentBoard.grid[X(grid)][Y(grid)].get(X(input),Y(input)) != '.') {
 			continue;
 		}
-		cout << input;
-
+		
 		if (input < 10) {
 			break;
 		}
 	}
 
-	currentBoard.grid[X(g)][Y(g)].set(X(input), Y(input), player);
+	currentBoard.grid[X(grid)][Y(grid)].set(X(input), Y(input), player);
 
-	if (currentBoard.grid[X(g)][Y(g)].winningCel(player)) {
-		currentBoard.grid[X(g)][Y(g)].makeFull(player);
+	if (currentBoard.grid[X(grid)][Y(grid)].winningCel(player)) {
+		currentBoard.grid[X(grid)][Y(grid)].makeFull(player);
 	}
 
-	g = input;
+	grid = input;
 }
 
