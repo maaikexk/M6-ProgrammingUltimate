@@ -6,6 +6,5 @@
 class HumanPlayer {
 public:
 	int getInput();
-	int getNewGrid();
 };
 
