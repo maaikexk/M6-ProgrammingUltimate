@@ -16,12 +16,14 @@ public:
 	void play();
 	void input(int& g);
 	void getArduinoData();
+	void checkIncommingData();
 	int pickNewGrid(int& g);
 	int getFinalInput(int& g);
 	char player;
 
 	int nextGrid;
 	int nextSubgrid;
+	char inputs[2];
 
 	size_t cur;
 	AIPlayer playerAI;

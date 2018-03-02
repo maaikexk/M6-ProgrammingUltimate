@@ -119,7 +119,7 @@ void GameManager::play() {
 
 	//grid and subgrid
 	int grid, s;
-	grid = 1;
+	grid = 0;
 
 	//play until someboday has won
 	while (1) {
@@ -140,7 +140,7 @@ void GameManager::getArduinoData() {
 
 	do {
 		//read until end of line
-		str = ofxGetSerialString(serial, '\n'); 
+		str = ofxGetSerialString(serial, '\n');
 
 		if (str == "") continue;
 
@@ -151,6 +151,30 @@ void GameManager::getArduinoData() {
 		}
 
 	} while (str != "");
+}
+
+void GameManager::checkIncommingData() {
+	string str;
+
+	int returnGrid = -1, playerReturn = -1;
+	while (returnGrid == -1 && playerReturn == -1) {
+		do {
+			//read until end of line
+			str = ofxGetSerialString(serial, '\n');
+
+			if (str == "") continue;
+
+
+			//of length of the string is 2 save the values in the variables
+			if (str.length() == 2) {
+				returnGrid = str[0] - 48;
+				playerReturn = str[1] - 48;
+			}
+
+		} while (str != "");
+	}
+
+	std::cout << "gridCheckAI" << returnGrid << "vakje" << playerReturn << "\n";
 }
 
 //lets te current player pick a new grid
@@ -176,7 +200,8 @@ int GameManager::pickNewGrid(int& grid) {
 
 	//if player AI-input is given by the ai player
 	if (player == 'o') {
-		input = playerAI.getInput(grid, currentBoard);
+		input = inputs[0];
+		//input = playerAI.getInput(grid, currentBoard);
 		return input;
 	}
 
@@ -202,9 +227,9 @@ int GameManager::getFinalInput(int& grid) {
 
 	//player AI, get new input
 	if (player == 'o') {
-
+		input = inputs[1];
 		//gets input from AI player
-		input = playerAI.getInput(grid, currentBoard);
+		//input = playerAI.getInput(grid, currentBoard);
 
 		//checks if the move is legit
 		if (input > 0 && input < 10)
@@ -223,7 +248,9 @@ void GameManager::input(int& grid) {
 
 	//until otherwise stay in loop
 	while (1) {
-
+		if (player == 'o') {
+			playerAI.getInput(grid, currentBoard, inputs);
+		}
 		//player human
 		if (player == 'x') {
 
@@ -235,11 +262,12 @@ void GameManager::input(int& grid) {
 			while (nextGrid == -1 && nextSubgrid == -1) {
 				getArduinoData();
 			}
-			//std::cout << "subgrid" << nextGrid << "light" << nextSubgrid << "\n";
+			std::cout << "subgridHum" << nextGrid << "light" << nextSubgrid << "\n";
 		}
 
+
 		//lets current player pick new grid
-		if (currentBoard.grid[X(grid)][Y(grid)].checkFull()) {
+		if (currentBoard.grid[X(grid)][Y(grid)].checkFull() || grid == 0) {
 			grid = pickNewGrid(grid);
 		}
 
@@ -248,10 +276,15 @@ void GameManager::input(int& grid) {
 
 		//player ai
 		if (player == 'o') {
+
+			checkIncommingData();
+
 			unsigned char buf[2] = { grid + 48, input + 48 };
 			serial.writeBytes(&buf[0], 2);
 
-			//std::cout << "grid" << grid << "input" << input << "\n";
+			std::cout << "gridSendAI" << grid << "input" << input << "\n";
+
+			checkIncommingData();
 		}
 
 		//checks if the set is legit
@@ -267,9 +300,28 @@ void GameManager::input(int& grid) {
 	//sets the input
 	currentBoard.grid[X(grid)][Y(grid)].set(X(input), Y(input), player);
 
+	int playerInt;
+
+	if (player == 'x') {
+		playerInt = 1;
+	}
+	else {
+		playerInt = 2;
+	}
+
 	//checks if there is a winner
 	if (currentBoard.grid[X(grid)][Y(grid)].winningCel(player)) {
 		currentBoard.grid[X(grid)][Y(grid)].makeFull(player);
+
+		unsigned char full[2] = { grid + 48, playerInt + 48 };
+		serial.writeBytes(&full[0], 2);
+		std::cout << "gridISFULL" << grid << "player" << playerInt << "\n";
+	}
+	else {
+		unsigned char full[2] = { 0 + 48, playerInt + 48 };
+		serial.writeBytes(&full[0], 2);
+
+		std::cout << "gridNotFull" << 0 << "player" << playerInt << "\n";
 	}
 
 	//the last in put should be the new grid

@@ -8,13 +8,15 @@
 //AIPlayer returns a grid or move by calculating a heuristicScore
 
 //the fuction which returns the input
-int AIPlayer::getInput(int grid, Board board) {
-
+void AIPlayer::getInput(int grid, Board board, char* returnInput) {
+	//making an array
+	char inputs[2];
+	int inputBig = 0;
 	//possible moves of the given grid
 	std::vector<int> possibleMoves = board.grid[grid / 3][grid % 3 - 1].getEmptyPositions();
 
 	//input, score and depth initialized
-	int input;
+	int inputSmall;
 	int bestScore = -1000000;
 	int depth = 1;
 
@@ -33,10 +35,10 @@ int AIPlayer::getInput(int grid, Board board) {
 			}
 		}
 
-		//if there is only one possibility we can imidiatly return the set
+		/*//if there is only one possibility we can imidiatly return the set
 		if (possibleGrids.size() == 1) {
-			return possibleGrids[0];
-		}
+		return possibleGrids[0];
+		}*/
 
 		//for each grid it will check the possible moves
 		for (int i = 0; i < possibleGrids.size(); i++) {
@@ -55,13 +57,19 @@ int AIPlayer::getInput(int grid, Board board) {
 
 				//sees if the score is better than the previous ones
 				if (moveScore > bestScore) {
-					input = i;
+					inputBig = i;
+					inputSmall = newMoves[j];
 					bestScore = moveScore;
 				}
 			}
 		}
+
+		inputs[0] = possibleGrids[inputBig];
+		inputs[1] = inputSmall;
 		//return the best grid
-		return possibleGrids[input];
+		for (int i = 0; i < 2; i++) {
+			returnInput[i] = inputs[i];
+		}
 	}
 
 	//if there are moves availible then we can loop through those possible moves
@@ -76,12 +84,17 @@ int AIPlayer::getInput(int grid, Board board) {
 
 			//sees if the score is better than the previous scores
 			if (moveScore > bestScore) {
-				input = i;
+				inputSmall = i;
 				bestScore = moveScore;
 			}
 		}
+
+		inputs[0] = inputBig;
+		inputs[1] = possibleMoves[inputSmall];
 		//returns the best score
-		return possibleMoves[input];
+		for (int i = 0; i < 2; i++) {
+			returnInput[i] = inputs[i];
+		}
 	}
 }
 
@@ -103,10 +116,27 @@ int AIPlayer::getHeuristicsScore(Board currentBoard, int grid, char currentPlaye
 
 	//all the possible moves
 	std::vector<int> possibleMoves = currentBoard.grid[grid / 3][grid % 3 - 1].getEmptyPositions();
+	std::vector<int> amoundOfGrids;
+
+	for (int i = 1; i <= 9; i++) {
+		if (!currentBoard.grid[i / 3][i % 3 - 1].checkFull()) {
+			amoundOfGrids.push_back(i);
+		}
+	}
 
 	//initializing best score and maxDepth
 	int bestScore = -1000;
-	int maxDepth = 5;
+	int maxDepth;
+
+	maxDepth = 4;
+	/*if (amoundOfGrids.size() >= 8) {
+	maxDepth = 4;
+	}
+	else if (amoundOfGrids.size() <= 2) {
+	maxDepth = 6;
+	}else{
+	maxDepth = 3;
+	}*/
 
 	//if no subgrids are available and it has to choose a grid
 	if (possibleMoves.size() <= 0) {
